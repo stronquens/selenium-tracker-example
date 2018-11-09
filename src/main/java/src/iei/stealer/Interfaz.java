@@ -149,13 +149,14 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jButtonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarActionPerformed
         ArrayList<BookBean> listBook = new ArrayList<BookBean>();
+        DefaultTableModel model = (DefaultTableModel) jTableList.getModel();
+        model.setRowCount(0); // clear old data
         Selenium.connectChrome();
         if (jCheckBoxFnac.isSelected()) {
             listBook.addAll(Selenium.trackFnac(jTextFieldTitle.getText(), jTextFieldAutor.getText()));
         }
 
         //Paint in table
-        DefaultTableModel model = (DefaultTableModel) jTableList.getModel();
         for (BookBean book : listBook) {
             Object[] row = {book.getPage(), book.getTitle(), book.getAuthor(), book.getPrice()};
             model.addRow(row);
