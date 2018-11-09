@@ -5,6 +5,9 @@
  */
 package src.iei.stealer;
 
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Armado
@@ -28,11 +31,11 @@ public class Interfaz extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        TextFieldTitle = new javax.swing.JTextField();
+        jTextFieldTitle = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jTextFieldAutor = new javax.swing.JTextField();
         jCheckBoxAmazon = new javax.swing.JCheckBox();
-        javax.swing.JCheckBox jCheckBoxCorteIngles = new javax.swing.JCheckBox();
+        jCheckBoxCorteIngles = new javax.swing.JCheckBox();
         jCheckBoxFnac = new javax.swing.JCheckBox();
         jButtonBuscar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -40,11 +43,11 @@ public class Interfaz extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setLabelFor(TextFieldTitle);
+        jLabel1.setLabelFor(jTextFieldTitle);
         jLabel1.setText("Título del libro");
         jLabel1.setToolTipText("");
 
-        TextFieldTitle.setToolTipText("");
+        jTextFieldTitle.setToolTipText("");
 
         jLabel2.setText("Autor");
 
@@ -72,15 +75,20 @@ public class Interfaz extends javax.swing.JFrame {
 
         jTableList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Página", "Título", "Autor", "Precio"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, true, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jTableList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -102,7 +110,7 @@ public class Interfaz extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jTextFieldAutor, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(TextFieldTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jTextFieldTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jCheckBoxCorteIngles)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -115,7 +123,7 @@ public class Interfaz extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(TextFieldTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -140,7 +148,19 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBoxAmazonActionPerformed
 
     private void jButtonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarActionPerformed
-        Selenium.track();
+        ArrayList<BookBean> listBook = new ArrayList<BookBean>();
+        Selenium.connectChrome();
+        if (jCheckBoxFnac.isSelected()) {
+            listBook.addAll(Selenium.trackFnac(jTextFieldTitle.getText(), jTextFieldAutor.getText()));
+        }
+
+        //Paint in table
+        DefaultTableModel model = (DefaultTableModel) jTableList.getModel();
+        for (BookBean book : listBook) {
+            Object[] row = {book.getPage(), book.getTitle(), book.getAuthor(), book.getPrice()};
+            model.addRow(row);
+        }
+        Selenium.disconnectChrome();
     }//GEN-LAST:event_jButtonBuscarActionPerformed
 
     /**
@@ -172,6 +192,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new Interfaz().setVisible(true);
             }
@@ -179,14 +200,15 @@ public class Interfaz extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField TextFieldTitle;
     private javax.swing.JButton jButtonBuscar;
     private javax.swing.JCheckBox jCheckBoxAmazon;
+    private javax.swing.JCheckBox jCheckBoxCorteIngles;
     private javax.swing.JCheckBox jCheckBoxFnac;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableList;
     private javax.swing.JTextField jTextFieldAutor;
+    private javax.swing.JTextField jTextFieldTitle;
     // End of variables declaration//GEN-END:variables
 }
