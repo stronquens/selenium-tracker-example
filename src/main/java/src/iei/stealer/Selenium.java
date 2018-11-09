@@ -24,7 +24,7 @@ public class Selenium {
     private static WebDriver driver = null;
 
     public static void connectChrome() {
-        String exePath = "D:\\Users\\Armando\\Downloads\\chromedriver_win32\\chromedriver.exe";
+        String exePath = ".\\chromedriver.exe";
         System.setProperty("webdriver.chrome.driver", exePath);
         ChromeOptions options = new ChromeOptions();
         // options.addArguments("--start-maximized");
