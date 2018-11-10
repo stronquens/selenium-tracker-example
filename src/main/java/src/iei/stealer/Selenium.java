@@ -63,7 +63,7 @@ public class Selenium {
         // Process data
         ArrayList<BookBean> listBook = new ArrayList<BookBean>();
         for (WebElement elementoActual : elementList) {
-            BookBean newBook = new BookBean("Fanc");
+            BookBean newBook = new BookBean("Fnac");
             try {
                 newBook.setTitle(elementoActual
                         .findElement(By.cssSelector(".Article-desc a:first-child"))
@@ -84,6 +84,87 @@ public class Selenium {
             }
             listBook.add(newBook);
         }
+        return listBook;
+    }
+    
+    /*public static ArrayList<BookBean> trackCorteIngles(String title, String autor){
+        driver.get("https://www.elcorteingles.es/");
+        
+        WebElement cookiesWindow = driver.findElement(By.id("cookies-agree"));
+        if(cookiesWindow != null){
+            cookiesWindow.click();
+        }
+
+        // Open select category
+        driver.findElement(By.id("drilldown")).click();
+        // Select category
+        WebDriverWait waiting;
+        waiting = new WebDriverWait(driver, 1);
+        waiting.until(ExpectedConditions
+                .presenceOfElementLocated(By.id("md-10")));
+        
+        driver.findElement(By.id("md-10")).click();
+        driver.findElement(By.xpath("//*[@id=\"megadrop-list\"]/li[11]/div/div/div[1]/ul[2]/li[9]/a")).click();
+        
+        ArrayList<BookBean> listBook = new ArrayList<BookBean>();
+        return listBook;
+    }*/
+    
+    public static ArrayList<BookBean> trackAmazon(String title, String autor){
+        driver.get("https://www.amazon.es/");
+        
+        // Open select category
+        driver.findElement(By.id("nav-link-shopall")).click();
+        
+        // Select category
+        WebDriverWait waiting;
+        waiting = new WebDriverWait(driver, 1);
+        waiting.until(ExpectedConditions
+                .presenceOfElementLocated(By.xpath("//*[@id=\"shopAllLinks\"]/tbody/tr/td[2]/div[3]/ul/li[1]/a")));
+        driver.findElement(By.xpath("//*[@id=\"shopAllLinks\"]/tbody/tr/td[2]/div[3]/ul/li[1]/a")).click();
+        
+        // Search in text field
+        WebElement searchBox = driver.findElement(By.id("twotabsearchtextbox"));
+        searchBox.sendKeys(title + " " + autor);
+        searchBox.submit();
+        
+        // List Elements
+        WebDriverWait waiting2;
+        waiting2 = new WebDriverWait(driver, 10);
+        waiting2.until(ExpectedConditions
+                .presenceOfElementLocated(By.id("s-results-list-atf")));
+        
+        List<WebElement> elementList
+                = driver.findElements(By.cssSelector(".celwidget"));
+        
+        System.out.println("Número de elementos de la lista: " + elementList.size());
+        
+        //Process Data
+        ArrayList<BookBean> listBook = new ArrayList<BookBean>();
+        for (WebElement elementoActual : elementList) {
+            BookBean newBook = new BookBean("Amazon");
+            try {
+                newBook.setTitle(elementoActual
+                        .findElement(By.cssSelector(".s-access-title"))
+                        .getText());
+            } catch (Exception e) {
+            }
+            
+            /*try {
+                newBook.setAuthor(elementoActual
+                        .findElement(By.cssSelector())
+                        .getText());
+            } catch (Exception e) {
+            }*/
+            try {
+                newBook.setPrice(elementoActual
+                        .findElement(By.cssSelector(".s-price"))
+                        .getText());
+            } catch (Exception e) {
+            }
+            listBook.add(newBook);
+        }
+        
         return listBook;
     }
 }

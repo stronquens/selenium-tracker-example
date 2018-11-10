@@ -155,6 +155,12 @@ public class Interfaz extends javax.swing.JFrame {
         if (jCheckBoxFnac.isSelected()) {
             listBook.addAll(Selenium.trackFnac(jTextFieldTitle.getText(), jTextFieldAutor.getText()));
         }
+        if (jCheckBoxCorteIngles.isSelected()) {
+            listBook.addAll(Selenium.trackCorteIngles(jTextFieldTitle.getText(), jTextFieldAutor.getText()));
+        }
+        if (jCheckBoxAmazon.isSelected()) {
+            listBook.addAll(Selenium.trackAmazon(jTextFieldTitle.getText(), jTextFieldAutor.getText()));
+        }
 
         //Paint in table
         for (BookBean book : listBook) {
