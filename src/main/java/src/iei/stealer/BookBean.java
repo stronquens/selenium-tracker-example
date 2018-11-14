@@ -14,6 +14,7 @@ public class BookBean {
 
     public BookBean(String page) {
         this.page = page;
+        this.title="";
     }
 
     public String getPage() {

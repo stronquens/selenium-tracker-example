@@ -51,38 +51,50 @@ public class Selenium {
         searchBox.sendKeys(title + " " + autor);
         searchBox.submit();
 
-        WebDriverWait waiting2;
-        waiting2 = new WebDriverWait(driver, 10);
-        waiting2.until(ExpectedConditions
-                .presenceOfElementLocated(By.cssSelector(".Article-list")));
-
-        List<WebElement> elementList
-                = driver.findElements(By.cssSelector(".Article-item"));
-
-        System.out.println("Número de elementos de la lista: " + elementList.size());
-        // Process data
+        // Get elements from page
+        boolean existNext = true;
         ArrayList<BookBean> listBook = new ArrayList<BookBean>();
-        for (WebElement elementoActual : elementList) {
-            BookBean newBook = new BookBean("Fnac");
-            try {
-                newBook.setTitle(elementoActual
-                        .findElement(By.cssSelector(".Article-desc a:first-child"))
-                        .getText());
-            } catch (Exception e) {
+        while (existNext) {
+            WebDriverWait waiting2;
+            waiting2 = new WebDriverWait(driver, 10);
+            waiting2.until(ExpectedConditions
+                    .presenceOfElementLocated(By.cssSelector(".Article-list")));
+            
+            List<WebElement> elementList
+                    = driver.findElements(By.cssSelector(".Article-item"));
+
+            System.out.println("Número de elementos de la lista: " + elementList.size());
+            // Process data
+            for (WebElement elementoActual : elementList) {
+                BookBean newBook = new BookBean("Fnac");
+                try {
+                    newBook.setTitle(elementoActual
+                            .findElement(By.cssSelector(".Article-desc a:first-child"))
+                            .getText());
+                } catch (Exception e) {
+                }
+                try {
+                    newBook.setAuthor(elementoActual
+                            .findElement(By.cssSelector(".Article-descSub a:first-child"))
+                            .getText());
+                } catch (Exception e) {
+                }
+                try {
+                    newBook.setPrice(elementoActual
+                            .findElement(By.cssSelector(".userPrice"))
+                            .getText());
+                } catch (Exception e) {
+                }
+                if(!newBook.getTitle().equalsIgnoreCase(""))
+                    listBook.add(newBook);
             }
+            // Change Page
             try {
-                newBook.setAuthor(elementoActual
-                        .findElement(By.cssSelector(".Article-descSub a:first-child"))
-                        .getText());
+                driver.findElement(By.cssSelector(".actionNext:last-child > i")).click();
             } catch (Exception e) {
+                System.out.println(e.getMessage());
+                existNext = false;
             }
-            try {
-                newBook.setPrice(elementoActual
-                        .findElement(By.cssSelector(".userPrice"))
-                        .getText());
-            } catch (Exception e) {
-            }
-            listBook.add(newBook);
         }
         return listBook;
     }
@@ -163,10 +175,11 @@ public class Selenium {
                             .getText());
                 } catch (Exception e) {
                 }
-                listBook.add(newBook);
+                if(!newBook.getTitle().equalsIgnoreCase(""))
+                    listBook.add(newBook);
             }
             try {
-               driver.findElement(By.cssSelector("a > #pagnNextString")).click();
+                driver.findElement(By.cssSelector("a > #pagnNextString")).click();
             } catch (Exception e) {
                 existNext = false;
             }
