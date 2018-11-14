@@ -45,7 +45,7 @@ public class Selenium {
         waiting.until(ExpectedConditions
                 .presenceOfElementLocated(By.cssSelector("li.select-option:nth-child(2)")));
         driver.findElement(By.cssSelector("li.select-option:nth-child(2)")).click();
-        
+
         // Search in text field
         WebElement searchBox = driver.findElement(By.id("Fnac_Search"));
         searchBox.sendKeys(title + " " + autor);
@@ -86,7 +86,7 @@ public class Selenium {
         }
         return listBook;
     }
-    
+
     /*public static ArrayList<BookBean> trackCorteIngles(String title, String autor){
         driver.get("https://www.elcorteingles.es/");
         
@@ -109,62 +109,68 @@ public class Selenium {
         ArrayList<BookBean> listBook = new ArrayList<BookBean>();
         return listBook;
     }*/
-    
-    public static ArrayList<BookBean> trackAmazon(String title, String autor){
+    public static ArrayList<BookBean> trackAmazon(String title, String autor) {
         driver.get("https://www.amazon.es/");
-        
+
         // Open select category
         driver.findElement(By.id("nav-link-shopall")).click();
-        
+
         // Select category
         WebDriverWait waiting;
         waiting = new WebDriverWait(driver, 1);
         waiting.until(ExpectedConditions
                 .presenceOfElementLocated(By.xpath("//*[@id=\"shopAllLinks\"]/tbody/tr/td[2]/div[3]/ul/li[1]/a")));
         driver.findElement(By.xpath("//*[@id=\"shopAllLinks\"]/tbody/tr/td[2]/div[3]/ul/li[1]/a")).click();
-        
+
         // Search in text field
         WebElement searchBox = driver.findElement(By.id("twotabsearchtextbox"));
         searchBox.sendKeys(title + " " + autor);
         searchBox.submit();
-        
-        // List Elements
-        WebDriverWait waiting2;
-        waiting2 = new WebDriverWait(driver, 10);
-        waiting2.until(ExpectedConditions
-                .presenceOfElementLocated(By.id("s-results-list-atf")));
-        
-        List<WebElement> elementList
-                = driver.findElements(By.cssSelector(".celwidget"));
-        
-        System.out.println("Número de elementos de la lista: " + elementList.size());
-        
-        //Process Data
+
+        boolean existNext = true;
         ArrayList<BookBean> listBook = new ArrayList<BookBean>();
-        for (WebElement elementoActual : elementList) {
-            BookBean newBook = new BookBean("Amazon");
-            try {
-                newBook.setTitle(elementoActual
-                        .findElement(By.cssSelector(".s-access-title"))
-                        .getText());
-            } catch (Exception e) {
+        while (existNext) {
+            // List Elements
+            WebDriverWait waiting2;
+            waiting2 = new WebDriverWait(driver, 10);
+            waiting2.until(ExpectedConditions
+                    .presenceOfElementLocated(By.id("s-results-list-atf")));
+
+            List<WebElement> elementList
+                    = driver.findElements(By.cssSelector(".s-result-item"));
+
+            System.out.println("Número de elementos de la lista: " + elementList.size());
+
+            //Process Data
+            for (WebElement elementoActual : elementList) {
+                BookBean newBook = new BookBean("Amazon");
+                try {
+                    newBook.setTitle(elementoActual
+                            .findElement(By.cssSelector(".s-access-title"))
+                            .getText());
+                } catch (Exception e) {
+                }
+
+                try {
+                    newBook.setAuthor(elementoActual
+                            .findElement(By.cssSelector(".s-item-container > div > div > div:last-child > div:first-child > div:last-child span:last-child"))
+                            .getText());
+                } catch (Exception e) {
+                }
+                try {
+                    newBook.setPrice(elementoActual
+                            .findElement(By.cssSelector(".s-price"))
+                            .getText());
+                } catch (Exception e) {
+                }
+                listBook.add(newBook);
             }
-            
-            /*try {
-                newBook.setAuthor(elementoActual
-                        .findElement(By.cssSelector())
-                        .getText());
-            } catch (Exception e) {
-            }*/
             try {
-                newBook.setPrice(elementoActual
-                        .findElement(By.cssSelector(".s-price"))
-                        .getText());
+               driver.findElement(By.cssSelector("a > #pagnNextString")).click();
             } catch (Exception e) {
+                existNext = false;
             }
-            listBook.add(newBook);
         }
-        
         return listBook;
     }
 }
