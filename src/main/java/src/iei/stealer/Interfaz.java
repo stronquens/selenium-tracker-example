@@ -156,7 +156,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         //Paint in table
         for (BookBean book : listBook) {
-            Object[] row = {book.getPage(), book.getTitle(), book.getAuthor(), book.getPrice()};
+            Object[] row = {book.getPage(), book.getTitle(), book.getAuthor(), book.getPrice(), book.getDiscPrice()};
             model.addRow(row);
         }
         Selenium.disconnectChrome();

@@ -11,18 +11,21 @@ public class BookBean {
     private String title;
     private String author;
     private String price;
+    private String discPrice;
 
     public BookBean(String page) {
         this.page = page;
         this.title = "";
         this.author = "";
         this.price = "";
+        this.discPrice = "";
     }
 
     public void setUnknown() {
         this.title = "X";
         this.author = "X";
         this.price = "X";
+        this.discPrice = "X";
     }
 
     public String getPage() {
@@ -55,6 +58,14 @@ public class BookBean {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+    
+    public String getDiscPrice() {
+        return discPrice;
+    }
+
+    public void setDiscPrice(String discPrice) {
+        this.discPrice = discPrice;
     }
 
 }

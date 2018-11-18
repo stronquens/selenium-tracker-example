@@ -90,9 +90,22 @@ public class Selenium {
                 } catch (Exception e) {
                 }
                 try {
-                    newBook.setPrice(elementoActual
-                            .findElement(By.cssSelector(".userPrice"))
-                            .getText());
+                    String oldPrice = "";
+                    try{
+                        WebElement oldPriceW = elementoActual.findElement(By.cssSelector(".oldPrice"));
+                        oldPrice = oldPriceW.getText();
+                    } catch (Exception e){
+                    }
+                    if(!"".equals(oldPrice)){
+                        newBook.setPrice(oldPrice);
+                        newBook.setDiscPrice(elementoActual
+                                .findElement(By.cssSelector(".userPrice"))
+                                .getText());
+                    } else {
+                        newBook.setPrice(elementoActual
+                                .findElement(By.cssSelector(".userPrice"))
+                                .getText());
+                    }
                 } catch (Exception e) {
                 }
                 if (!newBook.getTitle().equalsIgnoreCase("")) {
