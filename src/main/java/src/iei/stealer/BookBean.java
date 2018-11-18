@@ -14,7 +14,15 @@ public class BookBean {
 
     public BookBean(String page) {
         this.page = page;
-        this.title="";
+        this.title = "";
+        this.author = "";
+        this.price = "";
+    }
+
+    public void setUnknown() {
+        this.title = "X";
+        this.author = "X";
+        this.price = "X";
     }
 
     public String getPage() {

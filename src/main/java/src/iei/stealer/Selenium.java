@@ -36,6 +36,7 @@ public class Selenium {
     }
 
     public static ArrayList<BookBean> trackFnac(String title, String autor) {
+        ArrayList<BookBean> listBook = new ArrayList<BookBean>();
         driver.get("https://www.fnac.es/");
         // Open select category
         driver.findElement(By.cssSelector(".Header__aisle a")).click();
@@ -51,15 +52,24 @@ public class Selenium {
         searchBox.sendKeys(title + " " + autor);
         searchBox.submit();
 
+        // Check No results page
+        try {
+            driver.findElement(By.cssSelector(".noResults"));
+            BookBean unknown = new BookBean("Fnac");
+            unknown.setUnknown();
+            listBook.add(unknown);
+            return listBook;
+        } catch (Exception e) {
+        }
+
         // Get elements from page
         boolean existNext = true;
-        ArrayList<BookBean> listBook = new ArrayList<BookBean>();
         while (existNext) {
             WebDriverWait waiting2;
             waiting2 = new WebDriverWait(driver, 10);
             waiting2.until(ExpectedConditions
                     .presenceOfElementLocated(By.cssSelector(".Article-list")));
-            
+
             List<WebElement> elementList
                     = driver.findElements(By.cssSelector(".Article-item"));
 
@@ -85,9 +95,11 @@ public class Selenium {
                             .getText());
                 } catch (Exception e) {
                 }
-                if(!newBook.getTitle().equalsIgnoreCase(""))
+                if (!newBook.getTitle().equalsIgnoreCase("")) {
                     listBook.add(newBook);
+                }
             }
+
             // Change Page
             try {
                 driver.findElement(By.cssSelector(".actionNext:last-child > i")).click();
@@ -99,29 +111,8 @@ public class Selenium {
         return listBook;
     }
 
-    /*public static ArrayList<BookBean> trackCorteIngles(String title, String autor){
-        driver.get("https://www.elcorteingles.es/");
-        
-        WebElement cookiesWindow = driver.findElement(By.id("cookies-agree"));
-        if(cookiesWindow != null){
-            cookiesWindow.click();
-        }
-
-        // Open select category
-        driver.findElement(By.id("drilldown")).click();
-        // Select category
-        WebDriverWait waiting;
-        waiting = new WebDriverWait(driver, 1);
-        waiting.until(ExpectedConditions
-                .presenceOfElementLocated(By.id("md-10")));
-        
-        driver.findElement(By.id("md-10")).click();
-        driver.findElement(By.xpath("//*[@id=\"megadrop-list\"]/li[11]/div/div/div[1]/ul[2]/li[9]/a")).click();
-        
-        ArrayList<BookBean> listBook = new ArrayList<BookBean>();
-        return listBook;
-    }*/
     public static ArrayList<BookBean> trackAmazon(String title, String autor) {
+        ArrayList<BookBean> listBook = new ArrayList<BookBean>();
         driver.get("https://www.amazon.es/");
 
         // Open select category
@@ -139,8 +130,18 @@ public class Selenium {
         searchBox.sendKeys(title + " " + autor);
         searchBox.submit();
 
+        // Check No results page
+        try {
+            driver.findElement(By.cssSelector("#noResultsTitle"));
+            BookBean unknown = new BookBean("Amazon");
+            unknown.setUnknown();
+            listBook.add(unknown);
+            return listBook;
+        } catch (Exception e) {
+        }
+
+        // Moves pages
         boolean existNext = true;
-        ArrayList<BookBean> listBook = new ArrayList<BookBean>();
         while (existNext) {
             // List Elements
             WebDriverWait waiting2;
@@ -169,15 +170,20 @@ public class Selenium {
                             .getText());
                 } catch (Exception e) {
                 }
+
                 try {
                     newBook.setPrice(elementoActual
                             .findElement(By.cssSelector(".s-price"))
                             .getText());
                 } catch (Exception e) {
                 }
-                if(!newBook.getTitle().equalsIgnoreCase(""))
+                // Book with useful data
+                if (!newBook.getTitle().equalsIgnoreCase("")) {
                     listBook.add(newBook);
+                }
             }
+
+            // Check final page
             try {
                 driver.findElement(By.cssSelector("a > #pagnNextString")).click();
             } catch (Exception e) {
