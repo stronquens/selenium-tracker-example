@@ -41,6 +41,8 @@ public class Interfaz extends javax.swing.JFrame {
         jTableList = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(1012, 560));
+        setResizable(false);
 
         jLabel1.setLabelFor(jTextFieldTitle);
         jLabel1.setText("Título del libro");
